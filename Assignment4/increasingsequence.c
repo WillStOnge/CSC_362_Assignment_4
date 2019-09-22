@@ -17,6 +17,7 @@ int main()
 	scanf("%d", &start);
 	printf("Insert a maximum number: ");
 	scanf("%d", &end);
+	current = start;
 
 	// Check that end is greater than start
 	if (!(end > start))
@@ -25,30 +26,65 @@ int main()
 		return 1;
 	}
 
-	current = start;
-
+	/*
 	// Start asm
 	while (1)
 	{
-		while (!isPrime(current))
-			current++;
-		if (current < end)
+		while (!isPrime(current)) // cmp [rbp-4], 0 - je breakout
+			current++; // add current, 1
+		if (current < end) // cmp current, end - jge breakout
 		{
-			printf("%d ", current);
-			acc += current;
-			current = acc + 1;
+			acc += current; // add acc, current
+			current = acc + 1; // mov current, acc - add acc, 1
+			printf("%d ", current); // jmp print
 		}
 		else 
-			break;
+			break; // jmp breakout
 	}
+	*/
+
+	__asm {
+	innerloop: 
+		mov eax, DWORD PTR [current]
+		call isPrime
+		cmp ecx, 1
+		je condition
+		add current, 1
+		jmp innerloop
+	condition: 
+		mov ebx, end
+		cmp current, ebx
+		jge breakout
+		mov eax, DWORD PTR[current]
+		add acc, eax
+		mov eax, DWORD PTR[acc]
+		add eax, 1
+		mov current, eax
+		jmp print
+		jmp innerloop
+	}
+
+	goto breakout;
+print: printf("%d ", current);
+breakout:
+	return 1;
 }
 
-int isPrime(int num)
+int isPrime()
 {
+	int num, ret = 1;
+
+	__asm {
+		mov DWORD PTR[num],	eax
+	}
+
 	if (num < 4 || !(num % 2))
-		return 0;
+		ret = 0;
 	for (int i = 3; i < num - 1; i++)
 		if (!(num % i))
-			return 0;
-	return 1;
+			ret = 0;
+
+	__asm {
+		mov ecx, ret
+	}
 }
