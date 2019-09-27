@@ -45,14 +45,23 @@ int main()
 	}
 	*/
 
-	__asm
+	__asm // main sub-routine
 	{
-	loops:					; Main loop of the sub-routine
+	loop1:					; Main loop of the sub-routine
 
-							; call isPrime(eax) and cmp the returned value to 0, then je condition
 		mov eax, current
+		mov edx, 0
+		mov ebx, 2
+
+	returnpoint:			; Point to comeback from isPrime
+
+		jmp	isPrime			; Check if current is prime if so, jmp to the if statement below
+		cmp edx, 0
+		je conditional
+		jmp loop1
+
 		inc eax
-		jmp loops
+		jmp loop1
 
 	conditional:			; If statement of the equivalent C code.
 
@@ -71,19 +80,24 @@ int main()
 		inc eax				
 		mov current, eax
 
-		jmp loops			; jump back up to the top
+		jmp loop1			; jump back up to the top
+ 
+	isPrime:				; isPrime() sub-routine (in: eax, out: edx)
+		mov eax, current
+		div ebx				; divide eax by ebx, remainder goes into edx
+
+		cmp edx, 0			; if remainder is 0 or current > num - 1, then number is not prime
+		jmp returnpoint
+		inc ebx
+		cmp ebx, eax
+		jge returnpoint
+
+		cmp eax, end		; if current >= end, breakout of the program
+		jge breakout
+
+		jmp isPrime			; loop back up
 	}
 
 breakout:
 	return;
-}
-
-int isPrime(int num)
-{
-	if (num < 4 || !(num % 2))
-		return 0;
-	for (int i = 3; i < num - 1; i++)
-		if (!(num % i))
-			return 0;
-	return 1;
 }
