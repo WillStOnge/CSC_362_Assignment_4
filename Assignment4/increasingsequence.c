@@ -42,11 +42,7 @@ main()
 		cmp eax, end			; If the current number is >= the end number, exit the program.
 		jge breakout
 
-		;push current			; Push the current number onto the stack, call isPrime, then clean the stack.
-		;call isPrime
-		;pop edx
-
-		jmp isPrime
+		jmp isPrime				; Jump to the isPrime routine to test primality of current.
 
 	returnpoint:				; Return point for the isPrime code.
 
@@ -70,7 +66,7 @@ main()
 
 		add acc, eax			; Increment acc by current.
 
-		mov ebx, acc			; Set current equal to the number after the acc.
+		mov ebx, acc			; Set current equal to acc + 1.
 		inc ebx
 		mov current, ebx
 
@@ -78,7 +74,7 @@ main()
 		
 	isPrime:					; Check if a number is prime.
 
-		mov ebx, 2
+		mov ebx, 2				; Initialize the divisor
 
 	primeLoop:					; loop for the isPrime logic
 
@@ -102,7 +98,7 @@ main()
 
 		jmp primeLoop			; Continue the loop
 
-	breakout:
-		nop						; No operation needed
+	breakout:					; Escape point for the program
+		nop
 	}
 }
