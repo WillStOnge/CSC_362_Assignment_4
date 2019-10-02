@@ -6,8 +6,8 @@
 
 #include <stdio.h>
 
-int isPrime(int); // Checks if a number is prime
-
+void isPrime(int); // Checks if a number is prime
+int ret; // Return variable for isPrime
 
 int main()
 {
@@ -45,59 +45,48 @@ int main()
 	}
 	*/
 
-	__asm // main sub-routine
+	__asm
 	{
-	loop1:					; Main loop of the sub-routine
+	top:						; Top of the program (main loop)
 
-		mov eax, current
-		mov edx, 0
-		mov ebx, 2
+		mov eax, current		; Move the current number into eax
 
-	returnpoint:			; Point to comeback from isPrime
-
-		jmp	isPrime			; Check if current is prime if so, jmp to the if statement below
-		cmp edx, 0
-		je conditional
-		jmp loop1
-
-		inc eax
-		jmp loop1
-
-	conditional:			; If statement of the equivalent C code.
-
-		cmp eax, end		; Breakout of the loop if current >= end
-		jge breakout
-
-		push current		; Push arguments onto stack, call printf, then clean up the stack
-		push str
-		call printf
-		pop ebx
-		pop ebx
-
-		add acc, eax		; Increment acc by current
+	inner:						; Inner loop of the program
 		
-		mov eax, acc		; current = acc + 1
-		inc eax				
-		mov current, eax
-
-		jmp loop1			; jump back up to the top
- 
-	isPrime:				; isPrime() sub-routine (in: eax, out: edx)
-		mov eax, current
-		div ebx				; divide eax by ebx, remainder goes into edx
-
-		cmp edx, 0			; if remainder is 0 or current > num - 1, then number is not prime
-		jmp returnpoint
-		inc ebx
-		cmp ebx, eax
-		jge returnpoint
-
-		cmp eax, end		; if current >= end, breakout of the program
+		cmp eax, end			; If the current number is >= the end number, exit the program
 		jge breakout
 
-		jmp isPrime			; loop back up
-	}
+		push current			; Push the current number onto the stack, call isPrime, then clean the stack
+		call isPrime
+		pop edx
 
-breakout:
-	return;
+		cmp ret, 0				; If the return value is a 0, the number is prime so continue to the if logic
+		je condition
+
+		inc current				; Number is not a prime, increment current and see if that is prime
+		jmp inner
+
+	condition:
+		
+
+	breakout:
+		nop
+	}
+	return 0;
+}
+
+void isPrime(int num)
+{
+	if (num <= 3 || !(num % 2))
+	{
+		ret = 0;
+		return;
+	}
+	for (int i = 2; i < num; i++)
+		if (!(num % i))
+		{
+			ret = 0;
+			return;
+		}
+	ret = 1;
 }
