@@ -3,8 +3,7 @@
 	
 	Author: Will St. Onge
 
-	Description: Computes an increasing sequence of prime numbers between the starting and ending number inputted by the user. 
-				 The algorithm for find the next number in the sequence and print it out is written in x86 assembly.
+	Description: Computes an increasing sequence of prime numbers between the starting and ending number inputted by the user. The algorithm for find the next number in the sequence and print it out is written in x86 assembly. It starts at the first input number and checks if that is prime. If it is prime, it will output that number to console and add that to the accumulator and current equal to it. If it is not prime, it will increment the current number by 1. Once the end number is reached, the program will stop.
 */
 
 #define _CRT_SECURE_NO_WARNINGS
