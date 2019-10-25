@@ -10,9 +10,15 @@
 
 #include <stdio.h>
 
-main()
+int main()
 {
-	int start, end, current, ret, acc = 0;
+	// Return value for isPrime (boolean)
+	int ret;
+	// Range of numbers acceptable (sser input)
+	int start, end;
+	// Current number and accumulator for increasing sequence
+	int current, acc = 0;
+	// Format for printf
 	char* str = "%d ";
 
 	// Get user inputs
@@ -22,12 +28,13 @@ main()
 	scanf("%d", &end);
 
 	// Check that end is greater than start
-	if (!(end > start))
+	if (end <= start)
 	{
 		printf("\nStarting number must be less than the maximum number");
 		return 1;
 	}
 
+	// Set the current number to start
 	current = start;
 
 	__asm
@@ -61,7 +68,7 @@ main()
 		pop ecx					; Cleanup the stack.
 		pop ecx
 
-		mov eax, current
+		mov eax, current		; Move current into the eax register so it can be added to acc.
 
 		add acc, eax			; Increment acc by current.
 
@@ -73,7 +80,7 @@ main()
 		
 	isPrime:					; Check if a number is prime.
 
-		mov ebx, 2				; Initialize the divisor
+		mov ebx, 2				; Initialize the divisor to 2
 
 	primeLoop:					; loop for the isPrime logic
 
@@ -82,22 +89,22 @@ main()
 		cmp ebx, eax			; Make sure the current 'index' is less than the number.
 		jge returnpoint
 
-		mov edx, 0				; Make sure edx is 0 so we don't get a modulo issue.
-		mov ret, 0				; Reset ret to 0 so the 'function' doesn't return 1 when it shouldn't
+		mov edx, 0				; Make sure edx is 0 so we don't get modulo inaccuracy.
+		mov ret, 0				; Reset ret to 0 so the routine doesn't return 1 when it shouldn't.
 
 		div ebx					; Divide eax by ebx. This puts the result in eax and the remainder in edx.
 
 		cmp edx, 0				; If the remainder is 0, then current is not prime. Escape from the isPrime logic and go back to the main program.
 		je returnpoint
 
-		mov edx, 1				; Set ret to 1 signaling that eax is prime.
+		mov edx, 1				; Set ret to 1, signaling that eax is prime.
 		mov ret, edx
 
-		inc ebx					; Increment the divisor
+		inc ebx					; Increment the divisor.
 
-		jmp primeLoop			; Continue the loop
+		jmp primeLoop			; Continue the loop.
 
-	breakout:					; Escape point for the program
-		nop
+	breakout:					; Escape point for the program.
+		nop						; No operation.
 	}
 }
