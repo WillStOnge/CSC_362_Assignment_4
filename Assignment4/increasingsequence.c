@@ -47,7 +47,7 @@ int main()
 	condition:					
 		push current			// Pushes format and data onto the stack for printf call.
 		push str
-		call printf				// Call the printf function to print out the next number.
+		call printf				// Call the printf function to print out the next number in the sequence.
 		pop ecx					// Cleanup the stack.
 		pop ecx
 		mov eax, current		// Move current into the eax register so it can be added to acc.
